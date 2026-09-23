@@ -6,6 +6,10 @@ Minimalist PSR-3 compliant logger for PHP. One class, zero magic.
 
 A single `Logger` class that implements the full PSR-3 interface. No handler chains, no formatters, no configuration files. Just a callable handler, level threshold, and channel support. ~150 lines total.
 
+> **Background**: miGears is the open-source successor of **TinyGears**, a
+> self-developed PHP framework. It was renamed and open-sourced recently because
+> the name *TinyGears* is already taken in the open-source community.
+
 ## Features
 
 - **Full PSR-3 compliance** — all 8 log levels + `log()` method
