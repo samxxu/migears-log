@@ -27,7 +27,7 @@ class Logger extends AbstractLogger
     public const VERSION = '2.0.0';
 
     /** @var array<string, int> Log level priority (higher = more severe) */
-    private const array LEVELS = [
+    private const LEVELS = [
         LogLevel::DEBUG     => 0,
         LogLevel::INFO      => 1,
         LogLevel::NOTICE    => 2,
