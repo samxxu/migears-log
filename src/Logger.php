@@ -38,6 +38,9 @@ class Logger extends AbstractLogger
         LogLevel::EMERGENCY => 7,
     ];
 
+    /** @var callable(string): void */
+    private readonly mixed $handler;
+
     private readonly int $minLevel;
 
     /**
@@ -46,11 +49,19 @@ class Logger extends AbstractLogger
      * @param string $channel                  Optional channel name prepended to each line
      */
     public function __construct(
-        private readonly mixed $handler,
+        callable $handler,
         string $minLevel = LogLevel::DEBUG,
         private readonly string $channel = '',
     ) {
-        $this->minLevel = self::LEVELS[$minLevel] ?? 0;
+        $this->handler = $handler;
+
+        // Levels are defined in lower case; accept any case rather than letting
+        // a differently cased level silently fall through to the debug default.
+        $normalized = strtolower($minLevel);
+        if (!isset(self::LEVELS[$normalized])) {
+            throw new \InvalidArgumentException(sprintf('Unknown log level "%s".', $minLevel));
+        }
+        $this->minLevel = self::LEVELS[$normalized];
     }
 
     /**
@@ -66,7 +77,12 @@ class Logger extends AbstractLogger
         string $channel = '',
     ): self {
         $handler = function (string $line) use ($path): void {
-            file_put_contents($path, $line . \PHP_EOL, FILE_APPEND | LOCK_EX);
+            // A discarded return value loses the line silently on a full disk or
+            // a missing directory; surface it as an error instead. The @ keeps
+            // the native warning from duplicating the exception below.
+            if (@file_put_contents($path, $line . \PHP_EOL, FILE_APPEND | LOCK_EX) === false) {
+                throw new \RuntimeException(sprintf('Unable to write a log line to "%s".', $path));
+            }
         };
 
         return new self($handler, $level, $channel);
@@ -84,8 +100,15 @@ class Logger extends AbstractLogger
         string $level = LogLevel::DEBUG,
         string $channel = '',
     ): self {
+        if (!is_resource($stream)) {
+            throw new \InvalidArgumentException('Logger::toStream() expects an open stream resource.');
+        }
+
         $handler = function (string $line) use ($stream): void {
-            fwrite($stream, $line . \PHP_EOL);
+            // Same reasoning as toFile(): a failed write must not be silent.
+            if (@fwrite($stream, $line . \PHP_EOL) === false) {
+                throw new \RuntimeException('Unable to write a log line to the stream.');
+            }
         };
 
         return new self($handler, $level, $channel);
@@ -111,14 +134,16 @@ class Logger extends AbstractLogger
     public function log($level, string|Stringable $message, array $context = []): void
     {
         $level = (string) $level;
-        $priority = self::LEVELS[$level] ?? 0;
+        // PSR-3 levels are lower case; normalise so "INFO" is not read as an
+        // unknown level and demoted to debug.
+        $priority = self::LEVELS[strtolower($level)] ?? 0;
 
         if ($priority < $this->minLevel) {
             return;
         }
 
         $interpolated = $this->interpolate((string) $message, $context);
-        $line = $this->format($level, $interpolated, $context);
+        $line = $this->format($level, $interpolated);
 
         ($this->handler)($line);
     }
@@ -139,7 +164,11 @@ class Logger extends AbstractLogger
 
         $replace = [];
         foreach ($context as $key => $value) {
-            if (is_scalar($value) || $value instanceof Stringable) {
+            if (is_bool($value)) {
+                // (string) false is '', which reads as "no value at all"; spell
+                // booleans out so a false flag is visible in the line.
+                $replace['{' . $key . '}'] = $value ? 'true' : 'false';
+            } elseif (is_scalar($value) || $value instanceof Stringable) {
                 $replace['{' . $key . '}'] = (string) $value;
             } elseif ($value === null) {
                 $replace['{' . $key . '}'] = 'null';
@@ -153,10 +182,8 @@ class Logger extends AbstractLogger
      * Format a log line.
      *
      * Format: [YYYY-MM-DD HH:MM:SS] [channel] LEVEL: message
-     *
-     * @param array<string, mixed> $context
      */
-    private function format(string $level, string $message, array $context): string
+    private function format(string $level, string $message): string
     {
         $timestamp = date('Y-m-d H:i:s');
         $level = strtoupper($level);

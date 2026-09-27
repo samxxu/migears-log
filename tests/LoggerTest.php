@@ -178,6 +178,84 @@ final class LoggerTest extends TestCase
         self::assertCount(0, $this->lines);
     }
 
+    // --- Robustness: handler, level normalisation, interpolation ---
+
+    public function testNonCallableHandlerIsRejectedAtConstruction(): void
+    {
+        $this->expectException(\TypeError::class);
+        new Logger('not callable');
+    }
+
+    public function testUnknownMinLevelIsRejected(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new Logger(static function (string $line): void {
+        }, 'bogus');
+    }
+
+    public function testUppercaseMinLevelStillEnforcesTheThreshold(): void
+    {
+        $log = $this->createLogger('INFO');
+        $log->debug('should not appear');
+        $log->info('should appear');
+
+        self::assertCount(1, $this->lines);
+        self::assertStringContainsString('should appear', $this->lines[0]);
+    }
+
+    public function testUppercaseLevelInLogCallIsNotDemoted(): void
+    {
+        $log = $this->createLogger(LogLevel::INFO);
+        $log->log('INFO', 'info message');
+
+        self::assertCount(1, $this->lines);
+        self::assertStringContainsString('INFO:', $this->lines[0]);
+    }
+
+    public function testBooleanFalseIsInterpolatedLiterally(): void
+    {
+        $log = $this->createLogger();
+        $log->info('flag={flag}', ['flag' => false]);
+
+        self::assertStringContainsString('flag=false', $this->lines[0]);
+    }
+
+    public function testBooleanTrueIsInterpolatedLiterally(): void
+    {
+        $log = $this->createLogger();
+        $log->info('flag={flag}', ['flag' => true]);
+
+        self::assertStringContainsString('flag=true', $this->lines[0]);
+    }
+
+    public function testToStreamRejectsANonResource(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Logger::toStream('not a resource');
+    }
+
+    public function testToFileRaisesAnErrorWhenTheWriteFails(): void
+    {
+        $log = Logger::toFile('/no/such/directory/migears/app.log');
+
+        $this->expectException(\RuntimeException::class);
+        $log->info('this cannot be written');
+    }
+
+    public function testToStreamRaisesAnErrorWhenTheWriteFails(): void
+    {
+        $stream = fopen('php://memory', 'r');
+
+        try {
+            $log = Logger::toStream($stream);
+
+            $this->expectException(\RuntimeException::class);
+            $log->info('this cannot be written');
+        } finally {
+            fclose($stream);
+        }
+    }
+
     // --- Channel ---
 
     public function testChannelNameInOutput(): void
