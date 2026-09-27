@@ -106,7 +106,7 @@ class Logger extends AbstractLogger
      *
      * @param mixed             $level   PSR-3 log level string
      * @param string|Stringable $message Log message
-     * @param array             $context Context array for interpolation
+     * @param array<string, mixed> $context Context array for interpolation
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
