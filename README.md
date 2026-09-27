@@ -162,7 +162,7 @@ class Users extends AbstractResource
 {
     public function POST(Request $request): Response
     {
-        $this->service('logger')->info('User created', ['id' => $userId]);
+        $this->resolve('logger')->info('User created', ['id' => $userId]);
         return Response::json(['status' => 'ok']);
     }
 }
@@ -334,7 +334,7 @@ class Users extends AbstractResource
 {
     public function POST(Request $request): Response
     {
-        $this->service('logger')->info('用户已创建', ['id' => $userId]);
+        $this->resolve('logger')->info('用户已创建', ['id' => $userId]);
         return Response::json(['status' => 'ok']);
     }
 }
