@@ -4,7 +4,7 @@
 
 Minimalist PSR-3 compliant logger for PHP. One class, zero magic.
 
-A single `Logger` class that implements the full PSR-3 interface. No handler chains, no formatters, no configuration files. Just a callable handler, level threshold, and channel support. ~150 lines total.
+A single `Logger` class that implements the full PSR-3 interface. No handler chains, no formatters, no configuration files. Just a callable handler, level threshold, and channel support — small enough to read in minutes.
 
 > **Background**: miGears is the open-source successor of **TinyGears**, a
 > self-developed PHP framework. It was renamed and open-sourced recently because
@@ -18,7 +18,7 @@ A single `Logger` class that implements the full PSR-3 interface. No handler cha
 - **Channel support** — tag log lines with a channel name
 - **Three built-in handlers** — file, stream, null
 - **Custom handlers** — pass any callable
-- **Single class, ~150 lines** — read and understand the whole thing in minutes
+- **Single class** — read and understand the whole thing in minutes
 - **Only dependency: psr/log** — the standard interface
 
 ## Installation
@@ -95,7 +95,7 @@ $log->info('Hello, {name}! You have {count} messages.', [
 // Output: [2024-01-01 12:00:00] [app] INFO: Hello, Bob! You have 5 messages.
 ```
 
-Scalar values and `Stringable` objects are interpolated. `null` becomes `"null"`. Non-scalar values (arrays, objects) are left as-is (placeholder stays).
+Scalar values and `Stringable` objects are interpolated. `null` becomes `"null"` and booleans are spelled out as `true`/`false`. Non-scalar values (arrays, objects) are left as-is (placeholder stays).
 
 ### Output Format
 
@@ -135,7 +135,7 @@ miGears Log follows the miGears philosophy: **minimal, readable, and useful**.
 - **One class** — no handler chains, no formatters, no processors
 - **Callable handler** — flexibility without interface bloat
 - **PSR-3 compliant** — drop-in replacement for any PSR-3 logger
-- **Small enough to read** — ~150 lines of code
+- **Small enough to read** — read and understand it in minutes
 
 **What we don't do**:
 - No handler stacks / middleware chains
@@ -180,7 +180,7 @@ MIT
 
 极简 PSR-3 兼容 PHP 日志器。一个类，零魔法。
 
-单个 `Logger` 类实现完整的 PSR-3 接口。没有处理器链，没有格式化器，没有配置文件。只有一个可调用的 handler、级别阈值和 channel 支持。总共约 150 行代码。
+单个 `Logger` 类实现完整的 PSR-3 接口。没有处理器链，没有格式化器，没有配置文件。只有一个可调用的 handler、级别阈值和 channel 支持——小到几分钟就能读完。
 
 ## 特性
 
@@ -190,7 +190,7 @@ MIT
 - **Channel 支持** — 给日志行打上 channel 名称标签
 - **三种内置 handler** — 文件、流、空操作
 - **自定义 handler** — 传入任意可调用函数
-- **单类约 150 行** — 几分钟就能读完理解
+- **单类** — 几分钟就能读完理解
 - **唯一依赖：psr/log** — 标准接口
 
 ## 安装
@@ -267,7 +267,7 @@ $log->info('你好，{name}！你有 {count} 条消息。', [
 // 输出：[2024-01-01 12:00:00] [app] INFO: 你好，Bob！你有 5 条消息。
 ```
 
-标量值和 `Stringable` 对象会被插值。`null` 变为 `"null"`。非标量值（数组、对象）保持原样（占位符保留）。
+标量值和 `Stringable` 对象会被插值。`null` 变为 `"null"`，布尔值明确输出为 `true`/`false`。非标量值（数组、对象）保持原样（占位符保留）。
 
 ### 输出格式
 
@@ -307,7 +307,7 @@ miGears Log 遵循 miGears 设计哲学：**极简、可读、实用**。
 - **一个类** — 没有 handler 链、没有格式化器、没有处理器
 - **可调用 handler** — 灵活但不臃肿
 - **PSR-3 兼容** — 可直接替换任何 PSR-3 日志器
-- **小到可以读完** — 约 150 行代码
+- **小到可以读完** — 几分钟就能读完理解
 
 **我们不做的事**：
 - 没有 handler 栈 / 中间件链
