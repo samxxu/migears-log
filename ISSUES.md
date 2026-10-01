@@ -17,20 +17,21 @@ Legend — **P0** functional or security · **P1** documentation that fails when
 
 | | |
 |---|---|
-| Unsettled | P0 0 · P1 0 · P2 3 · P3 1 · other 1 |
-| Settled | 0 of 5 |
-| Waiting on the owner | _nothing_ |
-| Waiting on the reviewer | `P2-1`, `P2-2`, `P2-3`, `P3-1`, `G2` |
+| Unsettled | P0 0 · P1 0 · P2 0 · P3 1 · other 0 |
+| Settled | 5 of 6 |
+| Waiting on the owner | `P3-2` |
 | Waiting on the coordinator | _nothing_ |
+| Waiting on the reviewer | _nothing_ |
 | Deferred, owing nobody | _nothing_ |
 
 | id | level | status | title |
 |---|---|---|---|
-| [`P2-1`](issues/P2-1.md) | P2 | **fixed** | The constructor declares `$handler` as `mixed` with zero validation; a … |
-| [`P2-2`](issues/P2-2.md) | P2 | **fixed** | An unknown or uppercase `$minLevel` disables thresholding: … |
-| [`P2-3`](issues/P2-3.md) | P2 | **fixed** | `file_put_contents`/`fwrite` return values are discarded, so a full … |
-| [`P3-1`](issues/P3-1.md) | P3 | **fixed** | A boolean `false` context value interpolates to an empty string … |
-| [`G2`](issues/G2.md) | - | **fixed** | Strict flags: `phpunit.xml.dist` currently sets none of the five. The … |
+| [`P2-1`](issues/P2-1.md) | P2 | **verified** | The constructor declares `$handler` as `mixed` with zero validation; a … |
+| [`P2-2`](issues/P2-2.md) | P2 | **verified** | An unknown or uppercase `$minLevel` disables thresholding: … |
+| [`P2-3`](issues/P2-3.md) | P2 | **verified** | `file_put_contents`/`fwrite` return values are discarded, so a full … |
+| [`P3-1`](issues/P3-1.md) | P3 | **verified** | A boolean `false` context value interpolates to an empty string … |
+| [`P3-2`](issues/P3-2.md) | P3 | **open** | Logger::null() uses LogLevel::EMERGENCY as minLevel, meaning … |
+| [`G2`](issues/G2.md) | - | **verified** | Strict flags: `phpunit.xml.dist` currently sets none of the five. The … |
 
 ## Unclosed
 
@@ -39,17 +40,13 @@ highest severity first. `waiting on` is the party who acts next, read from that 
 
 | | |
 |---|---|
-| Unclosed | **5** of 5 |
-| By status | `fixed` 5 |
-| Waiting on | reviewer 5 |
+| Unclosed | **1** of 6 |
+| By status | `open` 1 |
+| Waiting on | owner 1 |
 
 | level | item | status | waiting on | title |
 |---|---|---|---|---|
-| **P2** | [`P2-1`](issues/P2-1.md) | `fixed` | reviewer | The constructor declares `$handler` as `mixed` with zero validation; a … |
-| **P2** | [`P2-2`](issues/P2-2.md) | `fixed` | reviewer | An unknown or uppercase `$minLevel` disables thresholding: … |
-| **P2** | [`P2-3`](issues/P2-3.md) | `fixed` | reviewer | `file_put_contents`/`fwrite` return values are discarded, so a full … |
-| **P3** | [`P3-1`](issues/P3-1.md) | `fixed` | reviewer | A boolean `false` context value interpolates to an empty string … |
-| **-** | [`G2`](issues/G2.md) | `fixed` | reviewer | Strict flags: `phpunit.xml.dist` currently sets none of the five. The … |
+| **P3** | [`P3-2`](issues/P3-2.md) | `open` | owner | Logger::null() uses LogLevel::EMERGENCY as minLevel, meaning … |
 
 ## Verdict
 
@@ -90,20 +87,21 @@ No test for partial write (fwrite returns less than length) on the stream path; 
 
 | | |
 |---|---|
-| 未了结 | P0 0 · P1 0 · P2 3 · P3 1 · 其他 1 |
-| 已了结 | 0 / 5 |
-| 等负责人 | _无_ |
-| 等评审方 | `P2-1`, `P2-2`, `P2-3`, `P3-1`, `G2` |
+| 未了结 | P0 0 · P1 0 · P2 0 · P3 1 · 其他 0 |
+| 已了结 | 5 / 6 |
+| 等模块主 | `P3-2` |
 | 等协调人 | _无_ |
+| 等评审方 | _无_ |
 | 已暂缓，不欠谁 | _无_ |
 
 | id | 级别 | 状态 | 标题 |
 |---|---|---|---|
-| [`P2-1`](issues/P2-1.md) | P2 | **fixed** | 构造器把 $handler 声明为 mixed 且零校验；非 callable 只在调用时以 Error: Call to undefined … |
-| [`P2-2`](issues/P2-2.md) | P2 | **fixed** | 未知或大写的 $minLevel 会让阈值失效：LEVELS[$minLevel] ?? 0 使 new Logger($h, "INFO") … |
-| [`P2-3`](issues/P2-3.md) | P2 | **fixed** | file_put_contents/fwrite 的返回值被丢弃，磁盘满、权限不足或目录不存在都会静默丢日志；toStream() … |
-| [`P3-1`](issues/P3-1.md) | P3 | **fixed** | 布尔 false 的上下文值插值成空串（info("flag={flag}", ["flag" => false]) 输出 flag=），只有 … |
-| [`G2`](issues/G2.md) | - | **fixed** | 严格开关：`phpunit.xml.dist` … |
+| [`P2-1`](issues/P2-1.md) | P2 | **verified** | 构造器把 $handler 声明为 mixed 且零校验；非 callable 只在调用时以 Error: Call to undefined … |
+| [`P2-2`](issues/P2-2.md) | P2 | **verified** | 未知或大写的 $minLevel 会让阈值失效：LEVELS[$minLevel] ?? 0 使 new Logger($h, "INFO") … |
+| [`P2-3`](issues/P2-3.md) | P2 | **verified** | file_put_contents/fwrite 的返回值被丢弃，磁盘满、权限不足或目录不存在都会静默丢日志；toStream() … |
+| [`P3-1`](issues/P3-1.md) | P3 | **verified** | 布尔 false 的上下文值插值成空串（info("flag={flag}", ["flag" => false]) 输出 flag=），只有 … |
+| [`P3-2`](issues/P3-2.md) | P3 | **open** | Logger::null() 使用 LogLevel::EMERGENCY 作为 minLevel，意味着 emergency() … |
+| [`G2`](issues/G2.md) | - | **verified** | 严格开关：`phpunit.xml.dist` … |
 
 ## 未关闭
 
@@ -112,17 +110,13 @@ No test for partial write (fwrite returns less than length) on the stream path; 
 
 | | |
 |---|---|
-| 未关闭 | **5** / 5 |
-| 按状态 | `fixed` 5 |
-| 等在谁 | 评审方 5 |
+| 未关闭 | **1** / 6 |
+| 按状态 | `open` 1 |
+| 等在谁 | 模块主 1 |
 
 | 级别 | 条目 | 状态 | 等在谁 | 标题 |
 |---|---|---|---|---|
-| **P2** | [`P2-1`](issues/P2-1.md) | `fixed` | 评审方 | 构造器把 $handler 声明为 mixed 且零校验；非 callable 只在调用时以 Error: Call to undefined … |
-| **P2** | [`P2-2`](issues/P2-2.md) | `fixed` | 评审方 | 未知或大写的 $minLevel 会让阈值失效：LEVELS[$minLevel] ?? 0 使 new Logger($h, "INFO") … |
-| **P2** | [`P2-3`](issues/P2-3.md) | `fixed` | 评审方 | file_put_contents/fwrite 的返回值被丢弃，磁盘满、权限不足或目录不存在都会静默丢日志；toStream() … |
-| **P3** | [`P3-1`](issues/P3-1.md) | `fixed` | 评审方 | 布尔 false 的上下文值插值成空串（info("flag={flag}", ["flag" => false]) 输出 flag=），只有 … |
-| **-** | [`G2`](issues/G2.md) | `fixed` | 评审方 | 严格开关：`phpunit.xml.dist` … |
+| **P3** | [`P3-2`](issues/P3-2.md) | `open` | 模块主 | Logger::null() 使用 LogLevel::EMERGENCY 作为 minLevel，意味着 emergency() … |
 
 ## 结论
 
