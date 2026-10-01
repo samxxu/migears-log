@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MiGears\Log;
 
 use Psr\Log\AbstractLogger;
+use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
 use Stringable;
 
@@ -136,7 +137,13 @@ class Logger extends AbstractLogger
         $level = (string) $level;
         // PSR-3 levels are lower case; normalise so "INFO" is not read as an
         // unknown level and demoted to debug.
-        $priority = self::LEVELS[strtolower($level)] ?? 0;
+        $normalized = strtolower($level);
+        // The interface documents an exception for a level this logger does not
+        // define; the constructor refuses an unknown minimum level the same way.
+        if (!isset(self::LEVELS[$normalized])) {
+            throw new InvalidArgumentException(sprintf('Unknown log level "%s".', $level));
+        }
+        $priority = self::LEVELS[$normalized];
 
         if ($priority < $this->minLevel) {
             return;

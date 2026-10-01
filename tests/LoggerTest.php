@@ -170,12 +170,12 @@ final class LoggerTest extends TestCase
         self::assertCount(5, $this->lines);
     }
 
-    public function testInvalidLevelTreatedAsDebug(): void
+    public function testUnknownLogLevelIsRejected(): void
     {
-        $log = $this->createLogger(LogLevel::INFO);
+        $log = $this->createLogger();
+
+        $this->expectException(\Psr\Log\InvalidArgumentException::class);
         $log->log('unknown_level', 'test');
-        // Unknown level has priority 0 (same as debug), below INFO threshold
-        self::assertCount(0, $this->lines);
     }
 
     // --- Robustness: handler, level normalisation, interpolation ---
