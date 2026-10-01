@@ -21,6 +21,22 @@ A single `Logger` class that implements the full PSR-3 interface. No handler cha
 - **Single class** — read and understand the whole thing in minutes
 - **Only dependency: psr/log** — the standard interface
 
+## Boundaries
+
+**In scope**
+
+- The full PSR-3 surface — all 8 levels plus `log()`, from `Psr\Log\AbstractLogger`, with `{placeholder}` context interpolation (scalars and `Stringable`; `null` → `"null"`, booleans → `true`/`false`).
+- One level threshold and one optional channel name, configured at construction.
+- Three built-in handlers: `Logger::toFile()`, `Logger::toStream()` (any open stream, e.g. STDERR) and `Logger::null()`.
+- Custom destinations via a single `callable(string $line): void` passed as the handler.
+
+**Not in scope (by design)**
+
+- Handler chains, middleware, formatters and processors — the handler is one callable; a deeper pipeline is deliberately out of scope.
+- Log rotation and retention — use logrotate or a similar external tool.
+- Structured / JSON output, and async / buffered delivery — format or buffer inside your own handler.
+- Configuration files and DI container integration — a PSR-3 `LoggerInterface` is wired in by the container owner (e.g. `migears-manager` resolves one through its Registry); this library ships no config and no container.
+
 ## Installation
 
 ```bash
@@ -192,6 +208,22 @@ MIT
 - **自定义 handler** — 传入任意可调用函数
 - **单类** — 几分钟就能读完理解
 - **唯一依赖：psr/log** — 标准接口
+
+## 边界
+
+**范围内**
+
+- 完整的 PSR-3 日志接口 —— 全部 8 个级别加 `log()`，继承自 `Psr\Log\AbstractLogger`，支持 `{placeholder}` 上下文插值（标量与 `Stringable`；`null` → `"null"`，布尔值 → `true`/`false`）。
+- 一个级别阈值和一个可选的 channel 名称，在构造时配置。
+- 三种内置 handler：`Logger::toFile()`、`Logger::toStream()`（任意已打开的流，例如 STDERR）与 `Logger::null()`。
+- 通过以 handler 形式传入的单个 `callable(string $line): void` 自定义输出目的地。
+
+**范围外（刻意不做）**
+
+- Handler 链、中间件、格式化器与处理器 —— handler 就是一个可调用函数，更深的管道刻意不做。
+- 日志轮转与保留 —— 请使用 logrotate 或类似外部工具。
+- 结构化 / JSON 输出，以及异步 / 缓冲投递 —— 在你自己的 handler 里格式化或缓冲。
+- 配置文件与 DI 容器集成 —— PSR-3 的 `LoggerInterface` 由容器持有方装配（例如 `migears-manager` 通过其 Registry 解析 `LoggerInterface`）；本库不提供配置，也不提供容器。
 
 ## 安装
 
